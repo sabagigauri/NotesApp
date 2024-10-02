@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import { Note } from "../types/types"; 
+import { Reorder } from "framer-motion";
+import { Note, Task } from "../types/types"; 
 
 const Button: React.FC = () => {
   const [showColors, setShowColors] = useState<boolean>(false);
@@ -92,73 +93,81 @@ const Button: React.FC = () => {
         </div>
       )}
 
-      {notes.map((note, noteIndex) => (
-        <div
-          key={noteIndex}
-          className="w-80 rounded-lg shadow-lg m-2 flex flex-col items-center justify-start px-3 py-4 gap-3"
-          style={{ backgroundColor: note.color }}
-        >
-          <div className="flex self-end gap-1">
-            <button
-              className="text-red-500 bg-white p-2 rounded-full"
-              onClick={() => handleDeleteNote(noteIndex)}
+      <Reorder.Group
+        axis="y"
+        values={notes}
+        onReorder={setNotes}
+        className="w-full flex flex-col items-center"
+      >
+        {notes.map((note, noteIndex) => (
+          <Reorder.Item key={noteIndex} value={note}>
+            <div
+              className="w-80 rounded-lg shadow-lg m-2 flex flex-col items-center justify-start px-3 py-4 gap-3"
+              style={{ backgroundColor: note.color }}
             >
-              ❌
-            </button>
-            <button
-              className="text-blue-500 bg-white p-2 rounded-full"
-              onClick={() => handleDownloadNote(note)}
-            >
-              📥
-            </button>
-          </div>
+              <div className="flex self-end gap-1">
+                <button
+                  className="text-red-500 bg-white p-2 rounded-full"
+                  onClick={() => handleDeleteNote(noteIndex)}
+                >
+                  ❌
+                </button>
+                <button
+                  className="text-blue-500 bg-white p-2 rounded-full"
+                  onClick={() => handleDownloadNote(note)}
+                >
+                  📥
+                </button>
+              </div>
 
-          <div className="flex gap-2">
-            <input
-              className="bg-white px-2 w-[200px] h-[40px] border rounded pl-2"
-              type="text"
-              placeholder="Type task"
-              value={note.inputValue}
-              onChange={(e) => handleInputChange(noteIndex, e)}
-            />
-            <button
-              className="bg-green-600 text-white w-[73px] h-[40px] rounded"
-              onClick={() => handleAddClick(noteIndex)}
-            >
-              Add
-            </button>
-          </div>
+              <div className="flex gap-2">
+                <input
+                  className="bg-white px-2 w-[200px] h-[40px] border rounded pl-2"
+                  type="text"
+                  placeholder="Type task"
+                  value={note.inputValue}
+                  onChange={(e) => handleInputChange(noteIndex, e)}
+                />
+                <button
+                  className="bg-green-600 text-white w-[73px] h-[40px] rounded"
+                  onClick={() => handleAddClick(noteIndex)}
+                >
+                  Add
+                </button>
+              </div>
 
-          <ul className="mt-4">
-            {note.listItem.map((item, taskIndex) => (
-              <li
-                key={taskIndex}
-                className="border-b p-2 flex items-center justify-between"
-              >
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    className="mr-2"
-                    checked={item.completed}
-                    onChange={() => toggleComplete(noteIndex, taskIndex)}
-                  />
-                  <span className={item.completed ? "line-through" : ""}>
-                    {item.text}
-                  </span>
-                </div>
-                {item.completed && (
-                  <button
-                    className="text-red-500 bg-white p-1 rounded-full"
-                    onClick={() => handleDeleteTask(noteIndex, taskIndex)}
+              <ul className="mt-4">
+                {note.listItem.map((item, taskIndex) => (
+                  <li
+                    key={taskIndex}
+                    className="border-b p-2 flex items-center justify-between"
                   >
-                    ❌
-                  </button>
-                )}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        className="mr-2"
+                        checked={item.completed}
+                        onChange={() => toggleComplete(noteIndex, taskIndex)}
+                      />
+                      <span className={item.completed ? "line-through" : ""}>
+                        {item.text}
+                      </span>
+                    </div>
+                    {item.completed && (
+                      <button
+                        className="text-red-500 bg-white p-1 rounded-full"
+                        onClick={() => handleDeleteTask(noteIndex, taskIndex)}
+                      >
+                        ❌
+                      </button>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Reorder.Item>
+        ))}
+      </Reorder.Group>
     </div>
   );
 };
