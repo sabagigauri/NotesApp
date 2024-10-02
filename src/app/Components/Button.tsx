@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Reorder } from "framer-motion";
-import { Note, Task } from "../types/types"; 
+import { Note } from "../types/types"; 
 
 const Button: React.FC = () => {
   const [showColors, setShowColors] = useState<boolean>(false);
