@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Reorder } from "framer-motion";
 import { Note } from "../types/types"; 
 
@@ -8,6 +8,17 @@ const Button: React.FC = () => {
   const [notes, setNotes] = useState<Note[]>([]);
 
   const colors = ["#f54242", "#4287f5", "#42f554", "#f5a742"];
+
+  useEffect(() => {
+    const savedNotes = localStorage.getItem("notes");
+    if (savedNotes) {
+      setNotes(JSON.parse(savedNotes));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("notes", JSON.stringify(notes));
+  }, [notes]);
 
   const handleClick = () => {
     setShowColors(!showColors);
@@ -37,6 +48,15 @@ const Button: React.FC = () => {
       setNotes(updatedNotes);
     }
   };
+
+      const handleKeyPress = (
+        event: React.KeyboardEvent<HTMLInputElement>,
+        noteIndex: number
+      ) => {
+        if (event.key === "Enter") {
+          handleAddClick(noteIndex);
+        }
+      };
 
   const toggleComplete = (noteIndex: number, taskIndex: number) => {
     const updatedNotes = [...notes];
@@ -127,6 +147,7 @@ const Button: React.FC = () => {
                   placeholder="Type task"
                   value={note.inputValue}
                   onChange={(e) => handleInputChange(noteIndex, e)}
+                  onKeyPress={(e) => handleKeyPress(e, noteIndex)}
                 />
                 <button
                   className="bg-green-600 text-white w-[73px] h-[40px] rounded"
